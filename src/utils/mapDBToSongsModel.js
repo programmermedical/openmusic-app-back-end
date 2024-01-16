@@ -1,4 +1,5 @@
-const mapDBToModel = ({
+/* eslint-disable camelcase */
+const mapDBToSongsModel = ({
   id,
   title,
   year,
@@ -7,6 +8,7 @@ const mapDBToModel = ({
   duration,
   inserted_at,
   updated_at,
+  albums_id,
 }) => ({
   id,
   title,
@@ -16,6 +18,7 @@ const mapDBToModel = ({
   duration,
   insertedAt: inserted_at,
   updatedAt: updated_at,
+  albums_id,
 });
 
-module.exports = { mapDBToModel };
+module.exports = { mapDBToSongsModel };
