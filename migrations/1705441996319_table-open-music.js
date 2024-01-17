@@ -45,7 +45,7 @@ exports.up = (pgm) => {
     },
     genre: {
       type: 'TEXT',
-      notNull: false,
+      notNull: true,
     },
     duration: {
       type: 'INTEGER',
@@ -72,7 +72,7 @@ exports.up = (pgm) => {
 };
 
 exports.down = (pgm) => {
+  pgm.dropConstraint('songs', 'fk_songs.albums_id');
   pgm.dropTable('albums');
-  pgm.dropConstraint('songs', 'fk_songs.albumid');
   pgm.dropTable('songs');
 };
