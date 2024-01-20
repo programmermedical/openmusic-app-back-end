@@ -1,31 +1,6 @@
 /* eslint-disable camelcase */
 
-exports.shorthands = undefined;
-
 exports.up = (pgm) => {
-  pgm.createTable('albums', {
-    id: {
-      type: 'VARCHAR(50)',
-      primaryKey: true,
-    },
-    name: {
-      type: 'TEXT',
-      notNull: true,
-    },
-    year: {
-      type: 'INTEGER',
-      notNull: true,
-    },
-    inserted_at: {
-      type: 'TEXT',
-      notNull: true,
-    },
-    updated_at: {
-      type: 'TEXT',
-      notNull: true,
-    },
-  });
-
   pgm.createTable('songs', {
     id: {
       type: 'VARCHAR(50)',
@@ -73,6 +48,5 @@ exports.up = (pgm) => {
 
 exports.down = (pgm) => {
   pgm.dropConstraint('songs', 'fk_songs.albums_id');
-  pgm.dropTable('albums');
   pgm.dropTable('songs');
 };
