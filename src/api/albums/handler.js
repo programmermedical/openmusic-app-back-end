@@ -1,17 +1,14 @@
 /* eslint-disable no-underscore-dangle */
+const autoBind = require('auto-bind');
 const ClientError = require('../../exceptions/ClientError');
-const SongService = require('../../services/postgres/SongsService');
 
 class AlbumsHandler {
   constructor(service, songService, validator) {
     this._service = service;
-    this._songService = new SongService();
+    this._songService = songService;
     this._validator = validator;
 
-    this.postAlbumHandler = this.postAlbumHandler.bind(this);
-    this.getAlbumByIdHandler = this.getAlbumByIdHandler.bind(this);
-    this.putAlbumByIdHandler = this.putAlbumByIdHandler.bind(this);
-    this.deleteAlbumByIdHandler = this.deleteAlbumByIdHandler.bind(this);
+    autoBind(this);
   }
 
   async postAlbumHandler(request, h) {
@@ -54,35 +51,29 @@ class AlbumsHandler {
     }
   }
 
-  async getAlbumByIdHandler(request, h) {
-    try {
-      const { id } = request.params;
-      const album = await this._service.getAlbumById(id);
-      album.songs = await this._songService.getSongByAlbumId(id);
-      return {
-        status: 'success',
-        data: {
-          album,
-        },
-      };
-    } catch (error) {
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
-      }
+  async getAlbumsHandler() {
+    const albums = await this._service.getAlbums();
 
-      const response = h.response({
-        status: 'error',
-        message: 'Falied, internal server error',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
-    }
+    return {
+      status: 'success',
+      data: {
+        albums,
+      },
+    };
+  }
+
+  async getAlbumByIdHandler(request) {
+    const { id } = request.params;
+
+    const album = await this._service.getAlbumById(id);
+    album.songs = await this._songService.getSongByAlbumId(id);
+
+    return {
+      status: 'success',
+      data: {
+        album,
+      },
+    };
   }
 
   async putAlbumByIdHandler(request, h) {
