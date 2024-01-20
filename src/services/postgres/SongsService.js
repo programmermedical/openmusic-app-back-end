@@ -11,7 +11,7 @@ class SongsService {
   }
 
   async addSong({
-    title, year, performer, genre, duration,
+    title, year, performer, genre, duration, albumId,
   }) {
     const id = nanoid(16);
     const insertedAt = new Date().toISOString();
@@ -34,8 +34,8 @@ class SongsService {
     }
 
     const query = {
-      text: 'INSERT INTO songs VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id',
-      values: [id, title, year, performer, genre, duration, insertedAt, updatedAt],
+      text: 'INSERT INTO songs VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id',
+      values: [id, title, year, performer, genre, duration, insertedAt, updatedAt, albumId],
     };
     console.log(query.values);
     const result = await this._pool.query(query);
