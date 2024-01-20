@@ -26,7 +26,7 @@ class PlaylistsHandler {
 
     const response = h.response({
       status: 'success',
-      message: 'Playlist berhasil ditambahkan',
+      message: 'Playlist has been successfull added',
       data: {
         playlistId,
       },
@@ -57,7 +57,7 @@ class PlaylistsHandler {
 
     const response = h.response({
       status: 'success',
-      message: 'Playlist berhasil dihapus',
+      message: 'Playlist has been successfull deleted',
     });
 
     return response;
@@ -80,7 +80,7 @@ class PlaylistsHandler {
 
     const response = h.response({
       status: 'success',
-      message: 'Lagu berhasil ditambahkan ke dalam playlist',
+      message: 'Music has been successfull added to playlist',
     });
     response.code(201);
     return response;
@@ -117,7 +117,7 @@ class PlaylistsHandler {
 
     return h.response({
       status: 'success',
-      message: 'Lagu berhasil dihapus dari playlist',
+      message: 'Music has been successfull deleted from playlist',
     });
   }
 

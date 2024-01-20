@@ -25,7 +25,7 @@ class CollaborationsHandler {
 
     const response = h.response({
       status: 'success',
-      message: 'Kolaborasi berhasil ditambahkan',
+      message: 'Collaborations has been successfull added',
       data: {
         collaborationId,
       },
@@ -45,7 +45,7 @@ class CollaborationsHandler {
 
     return {
       status: 'success',
-      message: 'Kolaborasi berhasil dihapus',
+      message: 'Collaborations has been successfull deleted',
     };
   }
 }
