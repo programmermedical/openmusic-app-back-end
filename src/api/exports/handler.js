@@ -30,7 +30,7 @@ class ExportsHandler {
 
     const response = h.response({
       status: 'success',
-      message: 'Permintaan Anda dalam antrian',
+      message: 'Your request is in queue',
     });
 
     response.code(201);

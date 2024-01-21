@@ -153,7 +153,7 @@ class AlbumsHandler {
 
     const response = h.response({
       status: 'success',
-      message: 'Cover berhasil diupload',
+      message: 'Cover has sucessfull uploaded',
     });
 
     response.code(201);
@@ -170,7 +170,7 @@ class AlbumsHandler {
 
     return h.response({
       status: 'success',
-      message: `Berhasil ${like} Album`,
+      message: `Successed ${like} Album`,
     }).code(201);
   }
 
@@ -199,7 +199,7 @@ class AlbumsHandler {
 
     return h.response({
       status: 'success',
-      message: 'Album batal disukai',
+      message: 'Unlike album successed',
     }).code(200);
   }
 }
