@@ -1,12 +1,15 @@
 /* eslint-disable no-underscore-dangle */
 const autoBind = require('auto-bind');
+const config = require('../../utils/config/config');
 const ClientError = require('../../exceptions/ClientError');
 
 class AlbumsHandler {
-  constructor(service, songService, validator) {
+  constructor(service, songService, StorageService, validator, UploadsValidator) {
     this._service = service;
     this._songService = songService;
+    this._storageService = StorageService;
     this._validator = validator;
+    this._uploadsValidator = UploadsValidator;
 
     autoBind(this);
   }
@@ -133,6 +136,71 @@ class AlbumsHandler {
       console.error(error);
       return response;
     }
+  }
+
+  async postUploadCoverHandler(request, h) {
+    const { id } = request.params;
+    const { cover } = request.payload;
+
+    await this._service.checkAlbum(id);
+
+    this._uploadsValidator.validateImageHeaders(cover.hapi.headers);
+
+    const filename = await this._storageService.writeFile(cover, cover.hapi);
+    const fileLocation = `http://${config.app.host}:${config.app.port}/albums/covers/${filename}`;
+
+    await this._service.editAlbumToAddCoverById(id, fileLocation);
+
+    const response = h.response({
+      status: 'success',
+      message: 'Cover berhasil diupload',
+    });
+
+    response.code(201);
+    return response;
+  }
+
+  async postLikesAlbumHandler(request, h) {
+    const { id } = request.params;
+    const { id: credentialId } = request.auth.credentials;
+
+    await this._service.checkAlbum(id);
+
+    const like = await this._service.addLikeAndDislikeAlbum(id, credentialId);
+
+    return h.response({
+      status: 'success',
+      message: `Berhasil ${like} Album`,
+    }).code(201);
+  }
+
+  async getLikesAlbumByIdhandler(request, h) {
+    const { id } = request.params;
+    const { likes, source } = await this._service.getLikesAlbumById(id);
+
+    const response = h.response({
+      status: 'success',
+      data: {
+        likes,
+      },
+    });
+
+    response.header('X-Data-Source', source);
+    return response;
+  }
+
+  async deleteLikesAlbumByIdhandler(request, h) {
+    const { id } = request.params;
+    const { id: credentialId } = request.auth.credentials;
+
+    await this._service.checkAlbum(id);
+
+    await this._service.unLikeAlbumById(id, credentialId);
+
+    return h.response({
+      status: 'success',
+      message: 'Album batal disukai',
+    }).code(200);
   }
 }
 

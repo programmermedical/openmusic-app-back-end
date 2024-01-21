@@ -3,6 +3,9 @@ require('dotenv').config();
 
 const Hapi = require('@hapi/hapi');
 const Jwt = require('@hapi/jwt');
+const Inert = require('@hapi/inert');
+const path = require('path');
+const config = require('./utils/config/config');
 
 // Albums
 const albums = require('./api/albums');
@@ -38,21 +41,35 @@ const CollaborationsValidator = require('./validator/collaborations');
 const CollaborationsService = require('./services/postgres/CollaborationsService');
 const ClientError = require('./exceptions/ClientError');
 
+// Exports
+const Exports = require('./api/exports');
+const ProducerService = require('./services/rabbitmq/ProducerService');
+const ExportsValidator = require('./validator/exports');
+
+// Uploads
+const StorageService = require('./services/storage/StorageService');
+const UploadsValidator = require('./validator/uploads');
+
+// Cache
+const CacheService = require('./services/redis/CacheService');
+
 const init = async () => {
+  const cacheService = new CacheService();
+  const albumsService = new AlbumsService(cacheService);
   const songsServices = new SongsService();
-  const albumsService = new AlbumsService();
   const authenticationsService = new AuthenticationsService();
   const usersService = new UsersService();
   const collaborationsService = new CollaborationsService();
   const playlistsService = new PlaylistsService(collaborationsService);
   const playlistsSongsService = new PlaylistsSongsService();
   const playlistsSongsActivitiesService = new PlaylistsSongsActivitiesService();
+  const storageService = new StorageService(path.resolve(__dirname, 'api/albums/file/covers'));
 
   const server = Hapi.server({
     // port: 5000,
     // host: process.env.NODE_ENV !== 'production' ? 'localhost' : '0.0.0.0',
-    port: process.env.PORT,
-    host: process.env.HOST,
+    host: config.app.host,
+    port: config.app.port,
     routes: {
       cors: {
         origin: ['*'],
@@ -64,6 +81,9 @@ const init = async () => {
   await server.register([
     {
       plugin: Jwt,
+    },
+    {
+      plugin: Inert,
     },
   ]);
 
@@ -90,7 +110,9 @@ const init = async () => {
       options: {
         service: albumsService,
         songService: songsServices,
+        StorageService: storageService,
         validator: albumsValidator,
+        UploadsValidator,
       },
     },
     {
@@ -131,6 +153,14 @@ const init = async () => {
         CollaborationsService: collaborationsService,
         PlaylistsService: playlistsService,
         CollaborationsValidator,
+      },
+    },
+    {
+      plugin: Exports,
+      options: {
+        ProducerService,
+        PlaylistsService: playlistsService,
+        ExportsValidator,
       },
     },
   ]);
