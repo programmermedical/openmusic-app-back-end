@@ -17,8 +17,6 @@
 
 ## OpenMusic-API-V1
 
-Submission Dicoding Fundamental Back-End Apps OpenMusic API Versi 1
-
 ### 5 Kriteria Utama
 
 1. Album Data Management
@@ -72,8 +70,6 @@ Submission Dicoding Fundamental Back-End Apps OpenMusic API Versi 1
    * **Note:** The use of these two parameters can be combined
 
 ## OpenMusic-API-V2
-
-Submission Dicoding Fundamental Back-End Apps OpenMusic API Versi 2
 
 ### 6 Kriteria Utama
 
@@ -269,8 +265,6 @@ Submission Dicoding Fundamental Back-End Apps OpenMusic API Versi 2
    - Query Parameter untuk pencarian lagu
 
 ## OpenMusic-API-V3 {NOW | 03-06-2024}
-
-Submission Dicoding Fundamental Back-End Apps OpenMusic API Versi 3
 
 ### 5 Kriteria Utama
 
